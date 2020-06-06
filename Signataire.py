@@ -1,6 +1,7 @@
 # Classes représentant un signataire ou un non-signataire
 
 from F2n import F2n
+import random
 
 class Signataire:
     def __init__(self, n_, s_):
@@ -12,10 +13,11 @@ class Signataire:
         self.y.randomize()
 
         # Generer le sigma (permutation aléatoire de (1, ..., n))
-        self.sigma = list(range(1, n + 1))
+        self.sigma = list(range(1, self.n + 1))
         random.shuffle(self.sigma)  # Permutations
 
         # Calculer c1, c2, et c3
+        # TODO
         
 
 
