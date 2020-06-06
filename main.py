@@ -1,7 +1,9 @@
-# Julien Giovinazzo - June 2020
+#! python3
+# Thomas Casadevall, Ophélie Deschaux, Julien Giovinazzo - June 2020
 # Projet Cryptographie : Ring Signatures
 
 from F2n import F2n
+from Signataire import Signataire, NonSignataire
 
 def main():
     N = 8  # Nombre de personnes dans l'anneau
