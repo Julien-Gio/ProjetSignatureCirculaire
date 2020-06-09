@@ -1,6 +1,9 @@
 # Classes représentant un signataire ou un non-signataire
 
 from F2n import F2n
+from PermutationNblock import PermutationNblock
+import FonctionsUtiles as FU
+
 import random
 
 class Signataire:
@@ -8,16 +11,21 @@ class Signataire:
         self.n = n_
         self.s = s_
 
+    def gen_ysigma(self):
         # Generer le y_i aléatoire de ce signataire
         self.y = F2n(self.n)
         self.y.randomize()
 
         # Generer le sigma (permutation aléatoire de (1, ..., n))
-        self.sigma = list(range(1, self.n + 1))
-        random.shuffle(self.sigma)  # Permutations
+        self.sigma = random.random()
+        random.shuffle(self.sigma
+        
+        return self.y, self.sigma
 
-        # Calculer c1, c2, et c3
-        # TODO
+    def get_c1c2c3(self):
+        # Calcule et retourne c1, c2, et c3
+        concat = self.sigma
+        self.c1 = FU.hachage(self.sigma 
         
 
 

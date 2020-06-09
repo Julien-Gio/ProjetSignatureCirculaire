@@ -4,10 +4,13 @@
 
 from F2n import F2n
 from Signataire import Signataire, NonSignataire
+import FonctionsUtiles as FU
+
 import random
 
+
 def main():
-    #################################################
+    ###################################################
     #
     # 1. Générer la signature de l'anneau
     # 2. Utiliser un oracle aléatoire pour transformer le
@@ -17,31 +20,42 @@ def main():
     #   C. Réponse
     # 3. Verification de la signature
     #
-    #################################################
+    ###################################################
     
     N = 8  # Nombre de personnes dans l'anneau
     t = 3  # Nombre de signataires
-    m  = "pomme de terre"  # Message a signer par l'anneau
+    m  = "pomme de terre"  # Message à signer par l'anneau
 
     # Générer la signature #
     n = 10  # Longueur d'un mot
     k = 4  # k quoi
 
-    # Les membres de l'anneau
-    P = []
+    # Creer les membres de l'anneau
+    membres_anneau = []
     for i in range(N):
         if N <= t:
             s = 1  #TODO génerer la clé secrète
             signataire = Signataire(n, s)
         else:
             signataire = NonSignataire(n)
-        P.append(signataire)
+        membres_anneau.append(signataire)
 
 
     nbr_rounds = 10  # Nombre de rondes
     for r in range(nbr_rounds):
         # Commitment step #
-                
+        y = []  # Dans F2n
+        sigma = []  # permutation de [1, ..., n]
+        for i in range(len(membres_anneau)):
+            y[i], sigma[i] = membres_annean[i].gen_ysigma()
+            
+        # Calcul des c1, c2, et c3
+        c1 = []
+        c2 = []
+        c3 = []
+        for i in range(len(membres_anneau)):
+            c1[i], c2[i], c3[i] = membres_annean[i].get_c1c2c3()
+        
         # Générer Sigma
         # TODO
         
@@ -50,7 +64,7 @@ def main():
 
         # Challenge step #
         # Utiliser une fonction de hachage semblable a un oracle aléatoire
-        beta = random_oracle(alpha, M)
+        beta = FU.random_oracle(alpha, M)
 
         # Response step #
         if beta == 0:
@@ -73,22 +87,6 @@ def main():
             break
 
 
-def calc_H(Hn):
-    pass
-
-
-def setup():
-    pass
-
-
-def generer_y():
-    pass
-
-
-def random_oracle(alpha, m):
-    # TODO => SHA ou MD5
-    return random.choice([0, 1, 2])
-        
 
 def verify(beta, param1, param2):
     if beta == 0:
