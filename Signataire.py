@@ -17,15 +17,20 @@ class Signataire:
         self.y.randomize()
 
         # Generer le sigma (permutation aléatoire de (1, ..., n))
-        self.sigma = random.random()
-        random.shuffle(self.sigma
+        self.sigma = PermutationNblock(self.n)        
         
         return self.y, self.sigma
 
     def get_c1c2c3(self):
         # Calcule et retourne c1, c2, et c3
+        # TODO
         concat = self.sigma
-        self.c1 = FU.hachage(self.sigma 
+        self.c1 = FU.hachage(concat)
+        
+        self.c2 = FU.hachage(concat)
+
+        self.c3 = FU.hachage(concat)
+        return self.c1, self.c2, self.c3
         
 
 
