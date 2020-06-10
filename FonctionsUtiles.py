@@ -8,7 +8,7 @@ def calc_H(Hn):
 
 
 def random_oracle(alpha, m):
-    # TODO => SHA ou MD5
+    h_out = sha256(
     return random.choice([0, 1, 2])
 
 
