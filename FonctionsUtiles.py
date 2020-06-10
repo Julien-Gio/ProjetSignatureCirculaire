@@ -8,8 +8,10 @@ def calc_H(Hn):
 
 
 def random_oracle(alpha, m):
-    h_out = sha256(
-    return random.choice([0, 1, 2])
+    h_out = sha256(alpha + m).digest()
+    # Extraire le dernier octet
+    octet = int.from_bytes(h_out[-1:], "little")
+    return octet % 3
 
 
 def hachage(n, x):

@@ -80,7 +80,9 @@ def main():
 
         # Response step #
         if beta == 0:
-            gamma = 0 # y
+            gamma = [] # y
+            for P in membres_anneau:
+                gamma.append(P.y)
             gamma_p = 0 # Pi
         elif beta == 1:
             gamma = 0 # (y XOR s)
