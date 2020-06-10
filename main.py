@@ -63,11 +63,16 @@ def main():
         Sigma = PermutationNblock(N)
         
         # Calcul de C1, C2, et C3 (les 'master commitments')
-        C1 = bytearray()
-        C2 = bytearray()
-        C3 = bytearray()
+        concat = Sigma.seed  # TODO
+        for c in c1:
+            concat += c
+        C1 = FU.hachage(concat)  # C1 = h(Sigma | c1[0] | ... | c1[N-1])
 
-        alpha = C1 + C2 + C3
+        C2 = FU.hachage(Sigma.apply(c2))  # C2 = h(Sigma(c2[0], ... , c2[N-1]))
+        
+        C3 = FU.hachage(Sigma.apply(c3))  # C3 = h(Sigma(c3[0], ... , c3[N-1]))
+
+        alpha = C1 + C2 + C3  # De type bytearray
         
         # Challenge step #
         # Utiliser une fonction de hachage semblable a un oracle aléatoire
@@ -101,7 +106,7 @@ def verify(beta, param1, param2):
     elif beta == 2:
         return True
     else
-        raise Exception("L'oracle a donnée une valeur impossible pour beta :", beta)
+        raise Exception("L'oracle a donné une valeur impossible pour beta :", beta)
 
 
 
