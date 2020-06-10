@@ -16,9 +16,9 @@ def main():
     # 1. Générer la signature de l'anneau
     # 2. Utiliser un oracle aléatoire pour transformer le
     #       schéma d'identification de Stern en signature
-    #   A. Commitment
-    #   B. Challenge (avec l'oracle)
-    #   C. Réponse
+    #   A. Commitment [alpha]
+    #   B. Challenge (avec l'oracle) [beta]
+    #   C. Réponse [gamma and gamma']
     # 3. Verification de la signature
     #
     ###################################################
@@ -28,7 +28,7 @@ def main():
     m  = "pomme de terre"  # Message à signer par l'anneau
 
     # Générer la signature #
-    n = 10  # Longueur d'un mot
+    n = 32  # Longueur d'un mot. Doit etre un multiple de 8
     k = 4  # k quoi
 
     # Creer les membres de l'anneau
@@ -86,13 +86,11 @@ def main():
         else
             raise Exception("L'oracle a donnée une valeur impossible pour beta :", beta)
 
-        # Verify step #
-        if verify(beta, reveal1, reveal2) == True:
-            print("Signature verifiée")
-        else
-            print("Signature falsifiée !")
-            break
 
+
+
+    # Verify step #
+    # TODO
 
 
 def verify(beta, param1, param2):

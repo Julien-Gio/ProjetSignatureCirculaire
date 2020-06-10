@@ -29,7 +29,7 @@ class Signataire:
         
         self.c2 = FU.hachage(self.n, self.sigma.apply(self.y))  # c2 = h(sigma(y))
 
-        self.c3 = FU.hachage()  # c3 = h(sigma(y XOR s))
+        self.c3 = FU.hachage(self.n, self.sigma)  # c3 = h(sigma(y XOR s))
         return self.c1, self.c2, self.c3
         
 
