@@ -4,6 +4,7 @@
 
 from F2n import F2n
 from Signataire import Signataire, NonSignataire
+from PermutationNblock import PermutationNblock
 import FonctionsUtiles as FU
 
 import random
@@ -41,41 +42,47 @@ def main():
         membres_anneau.append(signataire)
 
 
+    Sig = []  # Signature. Ex pour 2 rounds : [alpha1, gamma1, gamma'1, alpha2, gamma2, gamma'2]
+    
     nbr_rounds = 10  # Nombre de rondes
     for r in range(nbr_rounds):
         # Commitment step #
-        y = []  # Dans F2n
-        sigma = []  # permutation de [1, ..., n]
+        y = []  # des nombres dans F2n
+        sigma = []  # des PermtationNblock
         for i in range(len(membres_anneau)):
             y[i], sigma[i] = membres_annean[i].gen_ysigma()
             
         # Calcul des c1, c2, et c3
-        c1 = []
-        c2 = []
-        c3 = []
+        c1 = []  # list de bytearray
+        c2 = []  # list de bytearray
+        c3 = []  # list de bytearray
         for i in range(len(membres_anneau)):
-            c1[i], c2[i], c3[i] = membres_annean[i].get_c1c2c3()
+            c1[i], c2[i], c3[i] = membres_anneau[i].get_c1c2c3()
         
         # Générer Sigma
-        # TODO
+        Sigma = PermutationNblock(N)
         
         # Calcul de C1, C2, et C3 (les 'master commitments')
-        # TODO
+        C1 = bytearray()
+        C2 = bytearray()
+        C3 = bytearray()
 
+        alpha = C1 + C2 + C3
+        
         # Challenge step #
         # Utiliser une fonction de hachage semblable a un oracle aléatoire
         beta = FU.random_oracle(alpha, M)
 
         # Response step #
         if beta == 0:
-            reveal1 = 0 # y
-            reveal2 = 0 # Pi
+            gamma = 0 # y
+            gamma_p = 0 # Pi
         elif beta == 1:
-            reveal1 = 0 # (y XOR s)
-            reveal2 = 0 # Pi
+            gamma = 0 # (y XOR s)
+            gamma_p = 0 # Pi
         elif beta == 2:
-            reveal1 = 0 # Pi(y)
-            reveal2 = 0 # Pi(s)
+            gamma = 0 # Pi(y)
+            gamma_p = 0 # Pi(s)
         else
             raise Exception("L'oracle a donnée une valeur impossible pour beta :", beta)
 
