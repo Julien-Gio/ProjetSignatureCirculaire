@@ -25,7 +25,7 @@ def main():
     
     N = 8  # Nombre de personnes dans l'anneau
     t = 3  # Nombre de signataires
-    m  = "pomme de terre"  # Message à signer par l'anneau
+    M  = b'pomme de terre'  # Message à signer par l'anneau
 
     # Générer la signature #
     n = 32  # Longueur d'un mot. Doit etre un multiple de 8

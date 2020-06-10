@@ -7,9 +7,13 @@ import FonctionsUtiles as FU
 import random
 
 class Signataire:
-    def __init__(self, n_, s_):
-        self.n = n_
-        self.s = s_
+    def __init__(self, n_, w_):
+        self.n = n_  # Taille
+        self.w = w_  # Poids de s (0 pour un non signataire)
+        # Générer H et s
+        # TODO
+        self.s = F2n(self.n)
+        
 
     def gen_ysigma(self):
         # Generer le y_i aléatoire de ce signataire
@@ -17,19 +21,21 @@ class Signataire:
         self.y.randomize()
 
         # Generer le sigma (permutation aléatoire de (1, ..., n))
-        self.sigma = PermutationNblock(self.n)        
-        
-        return self.y, self.sigma
+        self.sigma = PermutationNblock(self.n)
 
-    def get_c1c2c3(self):
-        # Calcule et retourne c1, c2, et c3
+        # Calculer c1, c2, et c3
         # TODO
-        concat = self.sigma
-        self.c1 = FU.hachage(self.n, self.sigma)  # c1 = h(sigma | Hy')
+        concat = self.sigma.seed
+        self.c1 = FU.hachage(self.n, concat)  # c1 = h(sigma | Hy')
         
         self.c2 = FU.hachage(self.n, self.sigma.apply(self.y))  # c2 = h(sigma(y))
 
-        self.c3 = FU.hachage(self.n, self.sigma)  # c3 = h(sigma(y XOR s))
+        self.c3 = FU.hachage(self.n, self.sigma.apply(self.y ^ self.s))  # c3 = h(sigma(y XOR s))
+        
+        return self.y, self.sigma
+
+
+    def get_c1c2c3(self):
         return self.c1, self.c2, self.c3
         
 
