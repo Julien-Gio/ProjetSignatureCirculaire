@@ -38,7 +38,6 @@ def main():
     # Creer les membres de l'anneau
     membres_anneau = []
     for i in range(N):
-        print(i)
         if i < t:
             signataire = Signataire(n, k, w)
         else:
@@ -78,7 +77,12 @@ def main():
         beta = FU.random_oracle(alpha, M)
 
         # Response step #
+
         Pi = Sigma.apply(sigma)
+        s = []
+        for P in membres_anneau:
+            s.append(P.s)
+            
         if beta == 0:
             gamma = y # y
             gamma_p = Pi # Pi
@@ -96,7 +100,7 @@ def main():
                 gamma_p.append(Pi[i].apply(s[i]))
         else:
             raise Exception("L'oracle a donnée une valeur impossible pour beta :", beta)
-
+        print("beta :", beta)
         Sig.append(alpha)
         Sig.append(gamma)
         Sig.append(gamma_p)

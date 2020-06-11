@@ -62,7 +62,12 @@ def calc_C2(n, Sigma, c2):
     # C2 = h(Sigma(c2[0], ... , c2[N-1]))
     # Sigma est une permutation
     # c2 est une liste des tous les c2_i
-    C2 = hachage(n, Sigma.apply(c2))
+    permu = Sigma.apply(c2)
+    concat = bytearray()
+    for c2 in permu:
+        concat += c2
+        
+    C2 = hachage(n, concat)
     return C2
 
 
@@ -70,7 +75,12 @@ def calc_C3(n, Sigma, c3):
     # C3 = h(Sigma(c3[0], ... , c3[N-1]))
     # Sigma est une permutation
     # c3 est une liste des tous les c3_i
-    C3 = hachage(n, Sigma.apply(c3))
+    permu = Sigma.apply(c3)
+    concat = bytearray()
+    for c3 in permu:
+        concat += c3
+        
+    C3 = hachage(n, concat)
     return C3
 
     

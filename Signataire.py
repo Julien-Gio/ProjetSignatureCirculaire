@@ -14,9 +14,10 @@ class Signataire:
         self.w = w_  # Poids de s (0 pour un non signataire)
         
         self.gen_Hs()  # H et s
+
         if non_signataire:  # Dans le cas d'un non signataire, s = 0
             self.s = F2n(self.n)
-            print("NS")
+            
         self.gen_ysigma()  # y et sigma (calcul c1, c2 et c3 au passage)
         
 
