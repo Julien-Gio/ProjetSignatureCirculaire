@@ -51,7 +51,9 @@ class F2n:
         # Convert F2n to np.array
         out = np.array([])
         for b in self.bits:
-            out.append(b)
+            out = np.concatenate((out, np.array([b])))
+            
+        return out
     
     def to_bytearray(self):
         # Convert F2n to bytearray

@@ -1,6 +1,7 @@
 from hashlib import blake2b  # pour la fonction de hashage
 from hashlib import sha256  # pour l'oracle aléatoire
 import struct
+import numpy as np
 
 def calc_H(Hn):
     # Hn est une liste des matrices publiques H
@@ -18,8 +19,18 @@ def hachage(n, x):
     # n est la taille de sortie du hashage
     # x est de type bytearray
     # retourne h(x) de type bytearray
-    h_out = blake2b(x, digest_size = n/8).digest()
+    h_out = blake2b(x, digest_size = n//8).digest()
     return bytearray(h_out)
+
+
+def matrice_mul(M1, M2):
+    # M1 et M2 sont des np.array
+    mul = np.matmul(M1, M2)  # type np.matrix
+    mul = np.asarray(mul)  # type np.array
+
+    for ix, iy in np.ndindex(mul.shape):
+        mul[ix, iy] = mul[ix, iy] % 2
+    return mul
 
 
 def float2bytearray(f):

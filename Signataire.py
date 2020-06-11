@@ -83,11 +83,12 @@ class Signataire:
         self.sigma = PermutationNblock(self.n)
 
         # Calculer c1, c2, et c3
-        mul = np.matmul(self.H, self.y.to_np_array())
-        concat = FU.float2bytearray(self.sigma.seed) + mul
+        mul = FU.matrice_mul(self.H, self.y.to_np_array())[0, :]  # type np.array
+        mul_ba = mul.tobytes()
+        concat = FU.float2bytearray(self.sigma.seed) + mul_ba
         self.c1 = FU.hachage(self.n, concat)  # c1 = h(sigma | Hy')
-        self.c2 = FU.hachage(self.n, self.sigma.apply(self.y))  # c2 = h(sigma(y))
-        self.c3 = FU.hachage(self.n, self.sigma.apply(self.y ^ self.s))  # c3 = h(sigma(y XOR s))
+        self.c2 = FU.hachage(self.n, self.sigma.apply(self.y).to_bytearray())  # c2 = h(sigma(y))
+        self.c3 = FU.hachage(self.n, self.sigma.apply(self.y ^ self.s).to_bytearray())  # c3 = h(sigma(y XOR s))
         
         return self.y, self.sigma
 

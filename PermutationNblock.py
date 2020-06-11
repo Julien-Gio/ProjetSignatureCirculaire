@@ -39,7 +39,7 @@ class PermutationNblock:
         return vect
 
 
-    def applyF2n(self, vect_ref):
+    def applyList(self, vect_ref):
         # vect_ref est de type list
         vect = copy.deepcopy(vect_ref)  # Evite les problèmes liés au fait que les paramettres sont passées par 
         random.seed(self.seed)

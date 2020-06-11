@@ -48,7 +48,7 @@ def main():
 
     Sig = []  # Signature. Ex pour 2 rounds : [alpha1, gamma1, gamma'1, alpha2, gamma2, gamma'2]
     
-    nbr_rounds = 10  # Nombre de rondes
+    nbr_rounds = 1 # Nombre de rondes
     for r in range(nbr_rounds):
         # Commitment step #
         y = []  # des nombres dans F2n
@@ -78,25 +78,30 @@ def main():
         beta = FU.random_oracle(alpha, M)
 
         # Response step #
+        Pi = Sigma.apply(sigma)
         if beta == 0:
-            gamma = [] # y
-            for P in membres_anneau:
-                gamma.append(P.y)
-            gamma_p = 0 # Pi
+            gamma = y # y
+            gamma_p = Pi # Pi
         elif beta == 1:
-            gamma = 0 # (y XOR s)
-            gamma_p = 0 # Pi
+            gamma = [] # (y XOR s)
+            for P in membres_anneau:
+                gamma.append(P.y ^ P.s)
+            gamma_p = Pi # Pi
         elif beta == 2:
-            gamma = 0 # Pi(y)
-            gamma_p = 0 # Pi(s)
-        else
+            gamma = [] # Pi(y)
+            for i in range(N):
+                gamma.append(Pi[i].apply(y[i]))
+            gamma_p = [] # Pi(s)
+            for i in range(N):
+                gamma_p.append(Pi[i].apply(s[i]))
+        else:
             raise Exception("L'oracle a donnée une valeur impossible pour beta :", beta)
 
         Sig.append(alpha)
         Sig.append(gamma)
         Sig.append(gamma_p)
 
-
+    print(Sig)
     # Verify step #
     # TODO
 
@@ -108,7 +113,7 @@ def verify(beta, param1, param2):
         return True
     elif beta == 2:
         return True
-    else
+    else:
         raise Exception("L'oracle a donné une valeur impossible pour beta :", beta)
 
 
