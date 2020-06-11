@@ -18,7 +18,7 @@ def hachage(n, x):
     # n est la taille de sortie du hashage
     # x est de type bytearray
     # retourne h(x) de type bytearray
-    h_out = blake2b(x, digest_size=8).digest()
+    h_out = blake2b(x, digest_size = n/8).digest()
     return bytearray(h_out)
 
 

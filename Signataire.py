@@ -5,16 +5,79 @@ from PermutationNblock import PermutationNblock
 import FonctionsUtiles as FU
 
 import random
+import numpy as np
 
 class Signataire:
-    def __init__(self, n_, w_):
+    def __init__(self, n_, k_, w_):
         self.n = n_  # Taille
+        self.k = k_
         self.w = w_  # Poids de s (0 pour un non signataire)
         # Générer H et s
-        # TODO
-        self.s = F2n(self.n)
-        
 
+        # Algo de Keygen (calcul de H et s)
+        #   1. choose s a random vector of weight w
+        #   2. generate k-1 random vectors that make a G of rank k
+        #   3. Calculate Gsys
+        #   4. Build H
+
+        G_carre_inv = np.zeros(1)
+        while not G_carre_inv.any():
+            # 1. choose s a random vector of weight w
+            self.s = F2n(self.n)
+            while self.s.get_poids() != self.w:
+                self.s = F2n(self.n)
+                self.s.randomize()
+            print("S:", self.s)
+
+            # 2. generate k-1 random vectors that make a G of rank k
+            while True:
+                rowS = []
+                for i in self.s.bits:
+                    rowS.append(i)
+                G = np.array(rowS)
+                for i in range(self.k-1):
+                    newrow = F2n(self.n)
+                    newrow.randomize()                
+                    row = []
+                    for i in newrow.bits:
+                        row.append(i)
+                    G = np.vstack([G, row])
+                
+                if np.linalg.matrix_rank(G) == self.k:
+                    # Le rang de notre G est bon. Sinon on recommence
+                    break
+            
+            print("G:", G)
+            
+            # 3. Calculate Gsys
+            # Pivot de Gauss sur G
+            G_carre = G[:, 0:self.k]  # k par k
+            G_sys = []
+            try:
+                G_carre_inv = np.linalg.inv(G_carre)
+                print("G_carre_i:", G_carre_inv)
+            except np.linalg.LinAlgError:
+                print(" - Pivot de Gauss impossible.")  # Recommencer
+            
+        
+        G_sys = G_carre_inv.dot(G)
+        G_sys = np.matrix(G_sys, dtype=int)  # Passer la matrice en int
+
+        print("G_sys(int):", G_sys)
+
+        # Passer la matrice d'entiers en matrice binaire
+        for ligne in range(self.k):
+            for col in range(self.n):
+                G_sys[ligne, col] = G_sys[ligne, col] % 2
+        print("G_sys(bin):", G_sys)
+
+
+        # 4. Build H
+        G_droite = G_sys[:, self.k:]  # Les n-k colonnes de droite
+        I = np.identity(self.n - self.k, dtype=int)  # Matrice identité
+        self.H = np.concatenate((np.transpose(G_droite), I), axis=1)  # H = [G_droite | I]
+        print('H:', self.H)
+        
     def gen_ysigma(self):
         # Generer le y_i aléatoire de ce signataire
         self.y = F2n(self.n)
@@ -25,7 +88,7 @@ class Signataire:
 
         # Calculer c1, c2, et c3
         # TODO
-        concat = self.sigma.seed
+        concat = FU.float2bytearray(self.sigma.seed)
         self.c1 = FU.hachage(self.n, concat)  # c1 = h(sigma | Hy')
         
         self.c2 = FU.hachage(self.n, self.sigma.apply(self.y))  # c2 = h(sigma(y))
@@ -43,6 +106,11 @@ class Signataire:
 # Une personne non-signataire est comme une personne signataire, mais
 # avec une clé privée s = 0
 class NonSignataire(Signataire):  # NonSignataire hérite de Signataire
-    def __init__(self, n_):
-        super().__init__(n_, 0)  # Constructeur de Signataire, la classe parent
+    def __init__(self, n_, k_):
+        super().__init__(n_, k_, 0)  # Constructeur de Signataire (la classe parent)
         # Le reste est identique
+
+
+if __name__ == "__main__":
+    s = Signataire(10, 4, 4)
+

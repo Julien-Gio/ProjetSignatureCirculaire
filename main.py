@@ -13,7 +13,7 @@ import random
 
 
 def main():
-    ###################################################
+    #######################################################
     #
     # 1. Générer la signature de l'anneau
     # 2. Utiliser un oracle aléatoire pour transformer le
@@ -23,7 +23,7 @@ def main():
     #   C. Réponse [gamma and gamma']
     # 3. Verification de la signature
     #
-    ###################################################
+    #######################################################
     
     N = 8  # Nombre de personnes dans l'anneau
     t = 3  # Nombre de signataires
@@ -31,16 +31,17 @@ def main():
 
     # Générer la signature #
     n = 32  # Longueur d'un mot. Doit etre un multiple de 8
-    k = 4  # k quoi
+    k = 10  # k quoi
+    w = 15  # Poid du secret s des signataires
 
     # Creer les membres de l'anneau
     membres_anneau = []
     for i in range(N):
         if N <= t:
             s = 1  #TODO génerer la clé secrète
-            signataire = Signataire(n, s)
+            signataire = Signataire(n, k, w)
         else:
-            signataire = NonSignataire(n)
+            signataire = NonSignataire(n, k)
         membres_anneau.append(signataire)
 
 
@@ -90,7 +91,9 @@ def main():
         else
             raise Exception("L'oracle a donnée une valeur impossible pour beta :", beta)
 
-
+        Sig.append(alpha)
+        Sig.append(gamma)
+        Sig.append(gamma_p)
 
 
     # Verify step #
