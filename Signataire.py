@@ -8,12 +8,15 @@ import random
 import numpy as np
 
 class Signataire:
-    def __init__(self, n_, k_, w_):
+    def __init__(self, n_, k_, w_, non_signataire=False):
         self.n = n_  # Taille
         self.k = k_
         self.w = w_  # Poids de s (0 pour un non signataire)
         
         self.gen_Hs()  # H et s
+        if non_signataire:  # Dans le cas d'un non signataire, s = 0
+            self.s = F2n(self.n)
+            print("NS")
         self.gen_ysigma()  # y et sigma (calcul c1, c2 et c3 au passage)
         
 
@@ -101,8 +104,8 @@ class Signataire:
 # Une personne non-signataire est comme une personne signataire, mais
 # avec une clé privée s = 0
 class NonSignataire(Signataire):  # NonSignataire hérite de Signataire
-    def __init__(self, n_, k_):
-        super().__init__(n_, k_, 0)  # Constructeur de Signataire (la classe parent)
+    def __init__(self, n_, k_, w_):
+        super().__init__(n_, k_, w_, True)  # Constructeur de Signataire (la classe parent)
         # Le reste est identique
 
 

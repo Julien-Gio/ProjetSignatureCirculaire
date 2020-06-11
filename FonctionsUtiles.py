@@ -47,30 +47,30 @@ def bytearray2float(b):
     return f[0]
 
 
-def calc_C1(Sigma_seed, c1):
+def calc_C1(n, Sigma_seed, c1):
     # C1 = h(Sigma | c1[0] | ... | c1[N-1])
     # Sigma_seed est un float définissant la permutation de Sigma
     # c1 est une liste des tous les c1_i
     concat = float2bytearray(Sigma_seed)  # Type bytearray
     for c in c1:
         concat += c
-    C1 = hachage(concat)
+    C1 = hachage(n, concat)
     return C1
 
 
-def calc_C2(Sigma_seed, c2):
+def calc_C2(n, Sigma, c2):
     # C2 = h(Sigma(c2[0], ... , c2[N-1]))
     # Sigma est une permutation
     # c2 est une liste des tous les c2_i
-    C2 = hachage(Sigma.apply(c2))
+    C2 = hachage(n, Sigma.apply(c2))
     return C2
 
 
-def calc_C3(Sigma_seed, c3):
+def calc_C3(n, Sigma, c3):
     # C3 = h(Sigma(c3[0], ... , c3[N-1]))
     # Sigma est une permutation
     # c3 est une liste des tous les c3_i
-    C3 = hachage(Sigma.apply(c3))
+    C3 = hachage(n, Sigma.apply(c3))
     return C3
 
     

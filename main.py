@@ -31,18 +31,18 @@ def main():
     M  = b'pomme de terre'  # Message à signer par l'anneau
 
     # Générer la signature #
-    n = 32  # Longueur d'un mot. Doit etre un multiple de 8
-    k = 10  # k quoi
-    w = 15  # Poid du secret s des signataires
-
+    n = 10  # Longueur d'un mot. Doit etre un multiple de 8
+    k = 4  # k quoi
+    w = 4  # Poid du secret s des signataires
+    
     # Creer les membres de l'anneau
     membres_anneau = []
     for i in range(N):
-        if N <= t:
-            s = 1  #TODO génerer la clé secrète
+        print(i)
+        if i < t:
             signataire = Signataire(n, k, w)
         else:
-            signataire = NonSignataire(n, k)
+            signataire = NonSignataire(n, k, w)
         membres_anneau.append(signataire)
 
 
@@ -51,15 +51,15 @@ def main():
     nbr_rounds = 1 # Nombre de rondes
     for r in range(nbr_rounds):
         # Commitment step #
-        y = []  # des nombres dans F2n
-        sigma = []  # des PermtationNblock
+        y = [None]*N  # des nombres dans F2n
+        sigma = [None]*N  # des PermtationNblock
         for i in range(len(membres_anneau)):
-            y[i], sigma[i] = membres_annean[i].gen_ysigma()
+            y[i], sigma[i] = membres_anneau[i].gen_ysigma()
             
         # Calcul des c1, c2, et c3
-        c1 = []  # list de bytearray
-        c2 = []  # list de bytearray
-        c3 = []  # list de bytearray
+        c1 = [None]*N  # list de bytearray
+        c2 = [None]*N  # list de bytearray
+        c3 = [None]*N  # list de bytearray
         for i in range(len(membres_anneau)):
             c1[i], c2[i], c3[i] = membres_anneau[i].get_c1c2c3()
         
@@ -67,9 +67,9 @@ def main():
         Sigma = PermutationNblock(N)
         
         # Calcul de C1, C2, et C3 (les 'master commitments')
-        C1 = FU.calc_C1(Sigma.seed, c1)  # C1 = h(Sigma | c1[0] | ... | c1[N-1])
-        C2 = FU.calc_C2(Sigma.seed, c2)  # C2 = h(Sigma(c2[0], ... , c2[N-1]))
-        C3 = FU.calc_C3(Sigma.seed, c3)  # C3 = h(Sigma(c3[0], ... , c3[N-1]))
+        C1 = FU.calc_C1(n, Sigma.seed, c1)  # C1 = h(Sigma | c1[0] | ... | c1[N-1])
+        C2 = FU.calc_C2(n, Sigma, c2)  # C2 = h(Sigma(c2[0], ... , c2[N-1]))
+        C3 = FU.calc_C3(n, Sigma, c3)  # C3 = h(Sigma(c3[0], ... , c3[N-1]))
 
         alpha = C1 + C2 + C3  # De type bytearray
         
