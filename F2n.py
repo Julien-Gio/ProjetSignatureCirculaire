@@ -2,6 +2,7 @@
 # un vecteur de n bits
 
 import random
+import numpy as np
 
 class F2n:
     def __init__(self, n_):
@@ -46,6 +47,24 @@ class F2n:
         return out
 
 
+    def to_np_array(self):
+        # Convert F2n to np.array
+        out = np.array([])
+        for b in self.bits:
+            out.append(b)
+    
+    def to_bytearray(self):
+        # Convert F2n to bytearray
+        out = bytearray(self.bits)
+        return out
+    
+
+    def from_bytearray(self, b):
+        # Read bytearray of length n and store it
+        for i in range(self.n):
+            self.bits[i] = b[i]
+
+
 # Petit tests
 if __name__ == "__main__":
     y = F2n(6)
@@ -53,3 +72,10 @@ if __name__ == "__main__":
     x = F2n(6)
     x.randomize()
     print(y, "^", x, "=", y^x)
+    yba = y.to_bytearray()
+    y2 = F2n(6)
+    y2.from_bytearray(yba)
+    print(yba)
+    print(y2)
+    print(y.to_np_array())
+    

@@ -12,9 +12,13 @@ class Signataire:
         self.n = n_  # Taille
         self.k = k_
         self.w = w_  # Poids de s (0 pour un non signataire)
-        # Générer H et s
+        
+        self.gen_Hs()  # H et s
+        self.gen_ysigma()  # y et sigma (calcul c1, c2 et c3 au passage)
+        
 
-        # Algo de Keygen (calcul de H et s)
+    def gen_Hs(self):
+        # Algo de KeyGen (calcul de H et s)
         #   1. choose s a random vector of weight w
         #   2. generate k-1 random vectors that make a G of rank k
         #   3. Calculate Gsys
@@ -27,7 +31,6 @@ class Signataire:
             while self.s.get_poids() != self.w:
                 self.s = F2n(self.n)
                 self.s.randomize()
-            print("S:", self.s)
 
             # 2. generate k-1 random vectors that make a G of rank k
             while True:
@@ -47,36 +50,29 @@ class Signataire:
                     # Le rang de notre G est bon. Sinon on recommence
                     break
             
-            print("G:", G)
-            
             # 3. Calculate Gsys
             # Pivot de Gauss sur G
             G_carre = G[:, 0:self.k]  # k par k
             G_sys = []
             try:
                 G_carre_inv = np.linalg.inv(G_carre)
-                print("G_carre_i:", G_carre_inv)
             except np.linalg.LinAlgError:
-                print(" - Pivot de Gauss impossible.")  # Recommencer
-            
+                pass # Recommencer
         
         G_sys = G_carre_inv.dot(G)
         G_sys = np.matrix(G_sys, dtype=int)  # Passer la matrice en int
-
-        print("G_sys(int):", G_sys)
 
         # Passer la matrice d'entiers en matrice binaire
         for ligne in range(self.k):
             for col in range(self.n):
                 G_sys[ligne, col] = G_sys[ligne, col] % 2
-        print("G_sys(bin):", G_sys)
-
 
         # 4. Build H
         G_droite = G_sys[:, self.k:]  # Les n-k colonnes de droite
         I = np.identity(self.n - self.k, dtype=int)  # Matrice identité
         self.H = np.concatenate((np.transpose(G_droite), I), axis=1)  # H = [G_droite | I]
-        print('H:', self.H)
+
+
         
     def gen_ysigma(self):
         # Generer le y_i aléatoire de ce signataire
@@ -87,12 +83,10 @@ class Signataire:
         self.sigma = PermutationNblock(self.n)
 
         # Calculer c1, c2, et c3
-        # TODO
-        concat = FU.float2bytearray(self.sigma.seed)
+        mul = np.matmul(self.H, self.y.to_np_array())
+        concat = FU.float2bytearray(self.sigma.seed) + mul
         self.c1 = FU.hachage(self.n, concat)  # c1 = h(sigma | Hy')
-        
         self.c2 = FU.hachage(self.n, self.sigma.apply(self.y))  # c2 = h(sigma(y))
-
         self.c3 = FU.hachage(self.n, self.sigma.apply(self.y ^ self.s))  # c3 = h(sigma(y XOR s))
         
         return self.y, self.sigma

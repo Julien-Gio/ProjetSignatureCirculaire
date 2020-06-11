@@ -61,3 +61,5 @@ def calc_C3(Sigma_seed, c3):
     # c3 est une liste des tous les c3_i
     C3 = hachage(Sigma.apply(c3))
     return C3
+
+    

@@ -1,7 +1,8 @@
 #! python3
 
 # Thomas Casadevall, Ophélie Deschaux, Julien Giovinazzo - June 2020
-# Projet Cryptographie : Ring Signatures
+# Projet Cryptographie : Threshold Ring Signatures
+# Proof of concept
 
 
 from F2n import F2n
