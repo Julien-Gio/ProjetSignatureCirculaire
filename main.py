@@ -1,6 +1,8 @@
 #! python3
+
 # Thomas Casadevall, Ophélie Deschaux, Julien Giovinazzo - June 2020
 # Projet Cryptographie : Ring Signatures
+
 
 from F2n import F2n
 from Signataire import Signataire, NonSignataire
@@ -63,14 +65,9 @@ def main():
         Sigma = PermutationNblock(N)
         
         # Calcul de C1, C2, et C3 (les 'master commitments')
-        concat = Sigma.seed  # TODO
-        for c in c1:
-            concat += c
-        C1 = FU.hachage(concat)  # C1 = h(Sigma | c1[0] | ... | c1[N-1])
-
-        C2 = FU.hachage(Sigma.apply(c2))  # C2 = h(Sigma(c2[0], ... , c2[N-1]))
-        
-        C3 = FU.hachage(Sigma.apply(c3))  # C3 = h(Sigma(c3[0], ... , c3[N-1]))
+        C1 = FU.calc_C1(Sigma.seed, c1)  # C1 = h(Sigma | c1[0] | ... | c1[N-1])
+        C2 = FU.calc_C2(Sigma.seed, c2)  # C2 = h(Sigma(c2[0], ... , c2[N-1]))
+        C3 = FU.calc_C3(Sigma.seed, c3)  # C3 = h(Sigma(c3[0], ... , c3[N-1]))
 
         alpha = C1 + C2 + C3  # De type bytearray
         
