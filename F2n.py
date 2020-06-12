@@ -47,6 +47,13 @@ class F2n:
         return out
 
 
+    # Opérateur ==
+    def __eq__(self, obj):
+        if not isinstance(obj, F2n):
+            return False
+        return self.bits == obj.bits
+
+
     def to_np_array(self):
         # Convert F2n to np.array
         out = np.array([])

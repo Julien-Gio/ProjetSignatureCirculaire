@@ -77,29 +77,37 @@ def main():
         beta = FU.random_oracle(alpha, M)
 
         # Response step #
-
+        # Pi est composé de la graine de Sigma et de Sigma(graines des sigma)
         Pi = Sigma.apply(sigma)
+        graine_Pi = FU.float2bytearray(Sigma.seed) # Graine de Pi : graine des composantes
+        for i in sigma:
+            print(">", i.seed)
+            graine_Pi += FU.float2bytearray(i.seed)
         s = []
         for P in membres_anneau:
             s.append(P.s)
             
         if beta == 0:
-            gamma = y # y
-            gamma_p = Pi # Pi
+            gamma = y  # y
+            gamma_p = graine_Pi  # Pi
         elif beta == 1:
-            gamma = [] # (y XOR s)
+            gamma = []  # (y XOR s)
             for P in membres_anneau:
                 gamma.append(P.y ^ P.s)
-            gamma_p = Pi # Pi
+            gamma_p = graine_Pi  # Pi
         elif beta == 2:
-            gamma = [] # Pi(y)
+            gamma = []  # Pi(y) = Sigma(sigma(y))
+            y_permu = Sigma.apply(y)
             for i in range(N):
-                gamma.append(Pi[i].apply(y[i]))
-            gamma_p = [] # Pi(s)
+                gamma.append(Pi[i].apply(y_permu[i]))
+                
+            gamma_p = []  # Pi(s) = Sigma(sigma(s))
+            s_permu = Sigma.apply(s)
             for i in range(N):
-                gamma_p.append(Pi[i].apply(s[i]))
+                gamma_p.append(Pi[i].apply(s_permu[i]))
         else:
             raise Exception("L'oracle a donnée une valeur impossible pour beta :", beta)
+        
         print("beta :", beta)
         Sig.append(alpha)
         Sig.append(gamma)
@@ -107,10 +115,17 @@ def main():
 
     print(Sig)
     # Verify step #
-    # TODO
+    verify(Sig, M, [])
 
 
-def verify(beta, param1, param2):
+def verify(Signature, M, H):
+    alpha = Signature[0]
+    gamma = Signature[1]
+    gamma_p = Signature[2]
+    
+    # Calculer beta avec alpha, M, et l'oracle aléatoire
+    beta = FU.random_oracle(alpha, M)
+    print("V > beta:", beta)
     if beta == 0:
         return True
     elif beta == 1:
@@ -119,7 +134,6 @@ def verify(beta, param1, param2):
         return True
     else:
         raise Exception("L'oracle a donné une valeur impossible pour beta :", beta)
-
 
 
 if __name__ == "__main__":

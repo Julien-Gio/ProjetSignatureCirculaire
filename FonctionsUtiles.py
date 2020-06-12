@@ -1,3 +1,5 @@
+from PermutationNblock import PermutationNblock
+
 from hashlib import blake2b  # pour la fonction de hashage
 from hashlib import sha256  # pour l'oracle aléatoire
 import struct
@@ -34,16 +36,16 @@ def matrice_mul(M1, M2):
 
 
 def float2bytearray(f):
-    b = bytearray(struct.pack(">f", f))
+    b = bytearray(struct.pack(">d", f))
     return b
 
 
 def bytearray2float(b):
-    if len(b) != 4:
-        # Un float est sur 4 octets
-        raise Exception("b ne correspond pas a un float!")
+    if len(b) != 8:
+        # Un float est sur 8 octets
+        raise Exception("b ne correspond pas a un float!", len(b))
 
-    f = struct.unpack(">f", b[:])  # Tuple avec 1 element
+    f = struct.unpack(">d", b[:])  # Tuple avec 1 element
     return f[0]
 
 
@@ -83,4 +85,13 @@ def calc_C3(n, Sigma, c3):
     C3 = hachage(n, concat)
     return C3
 
+
+def decompser_Pi(graine_Pi, n, N):
+    # Retourne Sigma et les sigma a partir de Pi
+    Sigma = PermutationNblock(N, bytearray2float(graine_Pi[0:8]))
     
+    sigma = []
+    for i in range(N):
+        sigma.append(PermutationNblock(n, bytearray2float(graine_Pi[(i+1)*8 : (i+2)*8])))
+
+    return Sigma, sigma
