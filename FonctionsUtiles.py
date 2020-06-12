@@ -44,8 +44,10 @@ def bytearray2float(b):
     if len(b) != 8:
         # Un float est sur 8 octets
         raise Exception("b ne correspond pas a un float!", len(b))
-
-    f = struct.unpack(">d", b[:])  # Tuple avec 1 element
+    try:
+        f = struct.unpack(">d", b[:])  # Tuple avec 1 element
+    except:
+        f = 0
     return f[0]
 
 
